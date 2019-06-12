@@ -124,18 +124,23 @@
 
     <script>
         $(function(){
+            // 给退出a:退出 标签添加点击事件  
             $('#btn_close').on('click',function(){
+                // 调用ajax方法 发送请求 
              $.ajax({
                   type:'post',
                   url:'https://autumnfish.cn/big/admin/logout',
+                  //如果返回值中的code 为200 则请求成功 调转到用户登录的地方;
                   success:function(backData){
                     console.log(backData);
                     if(backData.code==200){
                         window.location.href='./login.html'
                     }else{
+                        // 请求发送失败  例如后台连接不上 弹出 提示框
                         $('#myModal').modal({
                             keyboard:true,
                         })
+                        return;
                     }
                   },
                 })
