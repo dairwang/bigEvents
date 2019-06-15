@@ -24,26 +24,26 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control username" name="username" id="inputEmail3" value="李思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control nickname" name="nickname" id="inputEmail3" value="思思">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control email" name="email" id="inputEmail3" value="lisisi@126.com">
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
+                    <label for="inputPassword3" class="col-sm-2 control-label ">用户图标：</label>
                     <div class="col-sm-10">
-                        <img src="images/2.jpg" alt="" class="user_pic">
+                        <img src="images/2.jpg" alt="" class="user_pic" name="user_pic">
                         <input type="file" id="exampleInputFile">
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                 <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
+                            <input type="password" class="form-control password" name="password" id="inputEmail3" value="12345678">
                         </div>
                     </div>
                
@@ -64,6 +64,51 @@
             </form>
         </div>
     </div>
+    <script>
+    $(function(){
+        // 进去主页发送Ajax请求 获取用户信息并设置到input标签中
+        // 因为input标签类名设置为返回的值的键名 所以是以下代码
+        $.ajax({
+            type:'get',
+            url:'http://localhost:8000/admin/userinfo_get',
+            success:function(backData){
+                for(var key in backData.data){
+                    $('input.'+key).val(backData.data[key]);
+                }
+                $('.user_pic').attr('src',backData.data.user_pic);
+                
+            }
+        })
+            // 点击修改标签  获取input标签内容 发送Ajax请求 修改成功
+            $('.btn-success').on('click',function(e){  
+                e.preventDefault();
+                // 获取input标签中的内容
+                var formData=new FormData($('form')[0]);   
+                $.ajax({
+                    type:'post',
+                    url:'http://localhost:8000/admin/userinfo_edit ',
+                    data:formData,
+                    contentType:false,
+                    processData:false,
+                    success:function(backData){
+                 console.log(backData);
+                }
+                
+                })
+
+            });
+            // 本地图片预览
+            $('#exampleInputFile').on('change',function(){
+                var icon=this.files[0];
+                var url=URL.createObjectURL(icon);
+                // 要使用dom对象才能设置 
+                $('.col-sm-10 img')[0].setAttribute('src',url);
+            })
+
+    })
+
+
+    </script>
 
 </body>
 
