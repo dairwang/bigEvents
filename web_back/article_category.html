@@ -206,13 +206,14 @@
 
             // --------当点击编辑弹出模态框中的保存按钮时----------------
             // 因为是用的同一个模态框 所有要判断一下 点击的这个按钮是新增还是编辑
-            $('#model_add').on('click', function () {
+            $('#model_add').on('click', function (e) {
+                e.preventDefault();
                 // 要判断它是否有这个类 有就是编辑保存按钮没有就是新增按钮 判断文本内容不行
                 if ($(this).hasClass('btn-success')) {          
                 //  现在是有这个类也就是说是编辑模态框 
                 // 获得要修改的input标签的参数  使用Jq的serialize方法 比较方便 所有要手动添加  name属性并且name属性的值是床垫参数的名称
                 // 获取input标签中的数据
-               var data1=$('text').serialize();
+               var data1=$('form').serialize();
                 //发送Ajax请求
                     $.ajax({
                         type:'post',
