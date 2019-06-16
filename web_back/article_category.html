@@ -224,7 +224,9 @@
                         getCategory()
                         
                         }
-                    })
+                     
+                    });
+                    $('#addModal').modal('hide');
                 }else {
                     //  当点击添加时 获取input标签内容 发送Ajax请求 用请求回的参数 使用模板创建一组tr 
                     var named = $('#recipient-name').val();
