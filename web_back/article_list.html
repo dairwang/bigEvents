@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/main.css">
     <script src="js/jquery-1.12.4.min.js"></script>
     <script src="./js/template-web.js"></script>
+    <script src="./jquery.twbsPagination.js"></script>
 </head>
 
 <body>
@@ -251,7 +252,7 @@
             </table>
 
             <div class="row text-center">
-                <ul class="pagination pagination-sm">
+                <ul  id="pagination-demo" class="pagination pagination-sm">
                     <li class="page-item first disabled"><a href="#" class="page-link">首页</a></li>
                     <li class="page-item prev disabled"><a href="#" class="page-link">上一页</a></li>
                     <li class="page-item active"><a href="#" class="page-link">1</a></li>
@@ -308,46 +309,78 @@
             success: function (backData) {
                 if (backData.code == 200) {
                     // console.log(backData);
-
                     var resHtml = template('tem_list', backData)
                     $('#selCategory').html(resHtml);
                 }
             }
         });
+
+          //   把发生Ajax请求渲染对应的文章封装成函数;  页数不能写死
+          function getAticle(myPage){
+            //获取文章类别和 文章状态
+            var type = $('#selCategory').val();
+            var state = $('#selStatus').val();
+            //发送ajax请求.
+            $.ajax({
+                //type:'get', //如果type是get可以省略不写.因为默认就是get
+                url:'http://localhost:8000/admin/search',
+                data:{
+                    key:'',
+                    type:type,
+                    state:state,
+                    page:myPage,
+                    perpage:5
+                },success:function(backData){
+                    console.log(backData);
+                    var resHtml = template('tem_tr',backData);
+                    $('tbody').html(resHtml);
+                    var totalPages=backData.totalPage;
+                    if(backData.code == 200){
+                        if(myPages!=totalPages){
+                            myPages=totalPages;
+                            // 当前页定义为1 ,因为当你删选的时候 当前页都是第一页
+                            var currentPage=1;
+                            $pagination.twbsPagination('destroy');
+                            $pagination.twbsPagination($.extend({}, defaultOpts, {
+                                // 开始页就是当前页
+                                startPage: currentPage,
+                                totalPages: myPages
+                            }));
+                        }
+                    }
+                }
+            });
+        }
+        // 先声明一个页码条 值先写一个 到时把动态生成的实际的页码赋予给它
+        var myPages=10
         // 当点击当点击筛选按钮时 获取option中的值 发送Ajax请求  获得此关键字的文章,并渲染到桌面上
         $('#btnSearch').on('click', function (e) {
             e.preventDefault();
-            console.log('hunv');
-
-            // e.preventDefault(); 
-            // type值就是ID值;
-            var type = $('#selCategory').val();
-            console.log(type);
-            var state = $('#selStatus').val();
-            console.log(state);
-            $.ajax({
-                type: 'get',
-                url: 'http://localhost:8000/admin/search',
-                data: {
-                    key: "",
-                    type: type,
-                    state: state,
-                    page: 1,
-                    perpage: 5,
-                },
-                success: function (backData) {
-                    // 拿到数值之后利用模板引擎渲染到桌面上;
-                      console.log(backData);
-                    if(backData.code==200){
-                        var resHtml=template('tem_tr',backData);
-                        $('tbody').html(resHtml);
-                    }
-
-
+            getAticle(1)
+        });
+        // --------------使用动态生成总页数的插件方法--------------
+        var $pagination=$('#pagination-demo');
+        var defaultOpts={
+            // 此处值写不写死都一样 因为还要生成新的页码条 页面上会显示动态生成的实际页码
+            totalPages: myPages,
+                visiblePages: 7,
+                first:'首页',
+                prev:"上一页",
+                next:'下一页',
+                last:'尾页',
+                onPageClick: function (event, page) {
+                //  点击页码渲染对应的数据添加到页面
+                // even 是事件
+                getAticle(page)
                 }
-            })
+        };
+          // twbsPagination 插件自带的方法
+          $pagination.twbsPagination(defaultOpts);
+      
+        // 页面一开始就要开始就要筛选一下所有的分类
+        $('#btnSearch').trigger('click');
+   
 
-        })
     </script>
 
 </body>
