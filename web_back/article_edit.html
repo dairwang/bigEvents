@@ -27,7 +27,7 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="text" class="form-control" id="inputEmail3" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
@@ -77,23 +77,8 @@
             </form>
         </div>
     </div>
-    <script type="text/javascript">
-     
-        //绿色主题色
-        // jeDate("#theme02",{
-        //     theme:{bgcolor:"#00A680",pnColor:"#00DDAA"},
-        //     format: "YYYY-MM-DD hh:mm:ss"
-        // });
-      
-    </script>
     <script>
-        $('#exampleInputFile').on('change',function(){
-            console.log('jbvb');
-            
-            var icon=$(this.files[0]);
-            var url=URL.createObjectURL(icon);
-            $('img.article_cover').attr('src',url)
-        })
+     
     </script>
 </body>
 
