@@ -9,6 +9,8 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <script src="./js/template-web.js"></script>
 </head>
 
 <body>
@@ -204,7 +206,35 @@
         <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
         <p>电话：0755-****888 粤ICP备*******8号</p>
     </div>
-
+    <script id="tmp_shan" type="text/html">
+            <div class="article_info">{{data.author}} 发布于 {{data.date}}&nbsp;&nbsp;&nbsp;分类: {{data.type}}&nbsp;&nbsp;&nbsp;阅读:
+                ({{data.read}})&nbsp;&nbsp;&nbsp;评论: ({{data.comment}})</div>
+    </script>
+<script>
+    $(function(){
+        // 一进来根据id发送Ajax请求,获得信息后使用模板引擎渲染到页面
+        // 获得地址问号和问号后面的内容  使用字符串的分割以("=")号分割;取下标一 也就是后面的id值
+        var id=window.location.search.split('=')[1];
+        console.log(id);
+        // 发送Ajax请求
+        $.ajax({
+            url:'http://localhost:8000/admin/search',
+            data:{
+                id:id
+            },
+            success:function(backData){
+                console.log(backData);
+                if(backData.code==200){
+                    var resHtml=template('tmp_shan',backData);
+                    $('.article_title').text(backData.data.title);
+                    $('.article_con').html(backData.data.content);
+                    $('.article_info').html(resHtml);
+                }
+                
+            }
+        })
+    })
+</script>
 </body>
 
 </html>

@@ -292,7 +292,7 @@
             <td class="text-center">{{v.state}}</td>
             <td class="text-center">
                 <a href="post-edit.html?id=996" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:deleteTr( 996 );" class="btn btn-danger btn-xs">删除</a>
+                <a href="javascript:deleteTr( 996 );" data-id="{{v.id}}" class="btn btn-danger btn-xs  btn-delete">删除</a>
             </td>
         </tr>
         {{/each}}
@@ -331,7 +331,6 @@
                     page:myPage,
                     perpage:5
                 },success:function(backData){
-                    console.log(backData);
                     var resHtml = template('tem_tr',backData);
                     $('tbody').html(resHtml);
                     var totalPages=backData.totalPage;
@@ -379,8 +378,26 @@
       
         // 页面一开始就要开始就要筛选一下所有的分类
         $('#btnSearch').trigger('click');
-   
-
+//    点击删除按钮时按照id删除文章
+// 因为是模板生成的 所以使用委托注册
+        $('tbody').on('click','a.btn-delete',function(e){
+            e.preventDefault();
+            var id=$(this).attr('data-id');
+            $.ajax({
+                url:'http://localhost:8000/admin/article_delete',
+                data:{
+                    id:id,
+                },
+                success:function(backData){
+                    if(backData.code==200){
+                        console.log(backData);
+                        
+                    }
+                   
+                    
+                }
+            })
+        })
     </script>
 
 </body>
